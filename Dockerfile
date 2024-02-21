@@ -1,12 +1,13 @@
-# we support images for building with a vanilla SteamOS base,
-# or versions with ootb support for rust or go
-# developers can also customize these images via this Dockerfile
-FROM ghcr.io/steamdeckhomebrew/holo-toolchain-rust:latest
-#FROM ghcr.io/steamdeckhomebrew/holo-toolchain-go:latest
-#FROM ghcr.io/steamdeckhomebrew/holo-base:latest
+# Docker image of SteamOS Holo from SteamDeckHomebrew
+FROM ghcr.io/steamdeckhomebrew/holo-base:latest
 
-# Add openssl for tokio-websockets server
-RUN pacman -Sy --noconfirm pkg-config openssl
+# Install rustup and openssl
+RUN pacman -Sy --noconfirm pkg-config rustup openssl && rustup install stable
 
-# entrypoint.sh should always be located in the backend folder
+# Setup rust environment
+RUN rustup default stable
+
+# Set the backend directory as the working directory
+WORKDIR /backend
+
 ENTRYPOINT [ "/backend/entrypoint.sh" ]
